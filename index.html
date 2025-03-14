@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>名前選択ルーレット</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #display {
+            font-size: 40px;
+            margin: 20px;
+            padding: 15px;
+            border: 2px solid #444;
+            display: inline-block;
+            width: 300px;
+            height: 100px;
+            line-height: 100px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+            background-color: white;
+        }
+
+        #suffix {
+            font-size: 24px;
+            margin-left: 5px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #startButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+
+        #stopButton {
+            background-color: #f44336;
+            color: white;
+            border: none;
+        }
+
+        #resetButton {
+            background-color: #777;
+            color: white;
+            border: none;
+        }
+
+        #settingsPanel {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 15px;
+            width: 300px;
+            margin: 20px auto;
+            border-radius: 8px;
+        }
+
+        #nameList {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #settingsPanel li {
+            cursor: pointer;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #settingsPanel input[type="text"] {
+            width: 70%;
+            padding: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="display">---</div><br>
+    <button id="startButton">スタート</button>
+    <button id="stopButton" disabled>ストップ</button>
+    <button id="resetButton">リセット</button>
+    <button onclick="toggleSettings()">設定 ⚙️</button>
+
+    <div id="settingsPanel">
+        <ul id="nameList"></ul>
+        <input type="text" id="newName" placeholder="名前を入力">
+        <button onclick="addName()">追加</button>
+        <button onclick="toggleSettings()">閉じる</button>
+    </div>
+
+    <script>
+        let names = ["佐藤", "鈴木", "高橋", "田中", "伊藤", "渡辺", "山本", "中村"];
+        let roulette;
+        let speed;
+        const selectedColors = ["#FFDEAD", "#B0E0E6", "#FFDAB9", "#E6E6FA", "#98FB98"];
+
+        function generateWeightedNames() {
+            let weightedNames = [];
+            names.forEach(name => {
+                let weight = name === "山" ? 1 : 100;
+                for (let i = 0; i < weight; i++) {
+                    weightedNames.push(name);
+                }
+            });
+            return weightedNames;
+        }
+
+        function updateNameList() {
+            const nameList = document.getElementById('nameList');
+            nameList.innerHTML = '';
+            names.forEach((name, index) => {
+                const li = document.createElement('li');
+                li.textContent = name;
+                li.onclick = () => {
+                    if(confirm(`${name}さんを削除しますか？`)){
+                        names.splice(index, 1);
+                        updateNameList();
+                    }
+                };
+                nameList.appendChild(li);
+            });
+        }
+
+        function addName() {
+            const newName = document.getElementById('newName').value.trim();
+            if(newName && !names.includes(newName)){
+                names.push(newName);
+                document.getElementById('newName').value = '';
+                updateNameList();
+            }
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        document.getElementById('startButton').onclick = () => {
+            if(names.length === 0) {
+                alert('名前リストが空です。名前を追加してください。');
+                return;
+            }
+
+            document.getElementById('startButton').disabled = true;
+            document.getElementById('stopButton').disabled = false;
+            document.getElementById('settingsPanel').style.display = 'none';
+            document.getElementById('display').classList.remove('selected');
+            document.getElementById('display').style.backgroundColor = 'white';
+            speed = 100;
+            let weightedNames = generateWeightedNames();
+
+            roulette = setInterval(() => {
+                const randomName = weightedNames[Math.floor(Math.random() * weightedNames.length)];
+                document.getElementById('display').innerHTML = `${randomName}<span id="suffix">さん</span>`;
+            }, speed);
+        };
+        /*
+        document.getElementById('stopButton').onclick = () => {
+            document.getElementById('stopButton').disabled = true;
+            const slowDown = setInterval(() => {
+                clearInterval(roulette);
+                speed += 50;
+                if(speed >= 500) {
+                    clearInterval(slowDown);
+                    document.getElementById('display').style.backgroundColor = selectedColors[Math.floor(Math.random() * selectedColors.length)];
+                    document.getElementById('startButton').disabled = false;
+                } else {
+                    let weightedNames = generateWeightedNames();
+                    roulette = setInterval(() => {
+                        const randomName = weightedNames[Math.floor(Math.random() * weightedNames.length)];
+                        document.getElementById('display').innerHTML = `${randomName}<span id="suffix">さん</span>`;
+                    }, speed);
+                    speed += 50;
+                }
+            }, 500);
+        };
+        */
+        document.getElementById('stopButton').onclick = () => {
+          document.getElementById('stopButton').disabled = true;
+          const slowDown = setInterval(() => {
+            clearInterval(roulette);
+            speed += 50;
+            if(speed >= 500) {
+              clearInterval(slowDown);
+              // ★最終決定★
+              let finalName = names[Math.floor(Math.random() * names.length)];
+            
+              // ★0.8秒後に変更★
+              document.getElementById('display').innerHTML = `${finalName}<span id="suffix">さん</span>`;
+              if (finalName === "山中") {
+                setTimeout(() => {
+                    document.getElementById('display').innerHTML = `山川<span id="suffix">さん</span>`;
+                }, 800); // 0.8秒後に変更
+              }
+
+              // 背景色を変える（豪華演出）
+              document.getElementById('display').style.backgroundColor = selectedColors[Math.floor(Math.random() * selectedColors.length)];
+              document.getElementById('startButton').disabled = false;
+          } else {
+              roulette = setInterval(() => {
+                  const randomName = names[Math.floor(Math.random() * names.length)];
+                  document.getElementById('display').innerHTML = `${randomName}<span id="suffix">さん</span>`;
+              }, speed);
+            }
+          }, 500);
+        };
+      
+        document.getElementById('resetButton').onclick = () => {
+            clearInterval(roulette);
+            document.getElementById('display').innerHTML = '---';
+            document.getElementById('display').style.backgroundColor = 'white';
+            document.getElementById('startButton').disabled = false;
+            document.getElementById('stopButton').disabled = true;
+        };
+
+        updateNameList();
+        document.getElementById('settingsPanel').style.display = 'none';
+    </script>
+</body>
+</html>
