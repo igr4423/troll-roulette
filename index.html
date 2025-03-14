@@ -194,7 +194,7 @@
                     // ★最終決定★
                     let finalName = names[Math.floor(Math.random() * names.length)];
                     document.getElementById('display').innerHTML = `${finalName}<span id="suffix">さん</span>`;
-
+                    document.getElementById('display').style.backgroundColor = selectedColors[Math.floor(Math.random() * selectedColors.length)];
                     // ★0.8秒後に変更★
                     if (finalName === "山中") {
                         setTimeout(() => {
@@ -202,9 +202,6 @@
                             // 背景色を変える（豪華演出）
                             document.getElementById('display').style.backgroundColor = specialColors[Math.floor(Math.random() * specialColors.length)];
                         }, 1000); // 1秒後に変更
-                    } else {
-                        document.getElementById('display').style.backgroundColor = selectedColors[Math.floor(Math.random() * selectedColors.length)];    
-                    }
                     document.getElementById('startButton').disabled = false;
                 } else {
                     roulette = setInterval(() => {
