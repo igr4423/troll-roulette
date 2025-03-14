@@ -199,10 +199,12 @@
                     if (finalName === "山中") {
                         setTimeout(() => {
                             document.getElementById('display').innerHTML = `山川<span id="suffix">さん</span>`;
-                            // 背景色を変える（豪華演出）
                             document.getElementById('display').style.backgroundColor = specialColors[Math.floor(Math.random() * specialColors.length)];
-                        }, 1000); // 1秒後に変更
-                    document.getElementById('startButton').disabled = false;
+                            document.getElementById('startButton').disabled = false; // ★ ここを正しい場所に移動
+                        }, 1000);
+                    } else {
+                        document.getElementById('startButton').disabled = false;
+                    }
                 } else {
                     roulette = setInterval(() => {
                         const randomName = names[Math.floor(Math.random() * names.length)];
