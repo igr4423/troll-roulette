@@ -184,33 +184,31 @@
         };
         */
         document.getElementById('stopButton').onclick = () => {
-          document.getElementById('stopButton').disabled = true;
-          const slowDown = setInterval(() => {
-            clearInterval(roulette);
-            speed += 50;
-            if(speed >= 500) {
-              clearInterval(slowDown);
-              // ★最終決定★
-              let finalName = names[Math.floor(Math.random() * names.length)];
-            
-              // ★0.8秒後に変更★
-              document.getElementById('display').innerHTML = `${finalName}<span id="suffix">さん</span>`;
-              if (finalName === "山中") {
-                setTimeout(() => {
-                    document.getElementById('display').innerHTML = `山川<span id="suffix">さん</span>`;
-                }, 800); // 0.8秒後に変更
-              }
-
-              // 背景色を変える（豪華演出）
-              document.getElementById('display').style.backgroundColor = selectedColors[Math.floor(Math.random() * selectedColors.length)];
-              document.getElementById('startButton').disabled = false;
-          } else {
-              roulette = setInterval(() => {
-                  const randomName = names[Math.floor(Math.random() * names.length)];
-                  document.getElementById('display').innerHTML = `${randomName}<span id="suffix">さん</span>`;
-              }, speed);
-            }
-          }, 500);
+            document.getElementById('stopButton').disabled = true;
+            const slowDown = setInterval(() => {
+                clearInterval(roulette);
+                speed += 50;
+                if(speed >= 500) {
+                    clearInterval(slowDown);
+                    // ★最終決定★
+                    let finalName = names[Math.floor(Math.random() * names.length)];
+                    // ★0.8秒後に変更★
+                    document.getElementById('display').innerHTML = `${finalName}<span id="suffix">さん</span>`;
+                    if (finalName === "山中") {
+                        setTimeout(() => {
+                            document.getElementById('display').innerHTML = `山川<span id="suffix">さん</span>`;
+                        }, 800); // 0.8秒後に変更
+                    }
+                    // 背景色を変える（豪華演出）
+                    document.getElementById('display').style.backgroundColor = selectedColors[Math.floor(Math.random() * selectedColors.length)];
+                    document.getElementById('startButton').disabled = false;
+                } else {
+                    roulette = setInterval(() => {
+                        const randomName = names[Math.floor(Math.random() * names.length)];
+                        document.getElementById('display').innerHTML = `${randomName}<span id="suffix">さん</span>`;
+                    }, speed);
+                }
+            }, 200);
         };
       
         document.getElementById('resetButton').onclick = () => {
